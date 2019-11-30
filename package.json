@@ -10,16 +10,52 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.helloWorld"
+		"onCommand:conan.newPackage",
+		"workspaceContains:**/conanfile.py"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"configuration": {
+			"title": "Conan",
+			"properties": {
+				"conan.executable": {
+					"description": "Path to the Conan client executable to use",
+					"type": "string",
+					"scope": "window",
+					"default": "conan"
+				},
+				"conan.userHome": {
+					"description": "Path to the Conan home (configuration and settings)",
+					"type": "string",
+					"scope": "window",
+					"default": "${workspaceFolder}/.conan"
+				},
+				"conan.storagePath": {
+					"description": "Path to the Conan cache (to store packages)",
+					"type": "string",
+					"scope": "window",
+					"default": "~/.conan/data"
+				}
+			}
+		},
 		"commands": [
 			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
-			}
-		]
+				"command": "conan.newPackage",
+				"title": "Conan: New package"
+			},
+            {
+                "command": "conan.install",
+                "title": "Conan: Install requires",
+            }
+		],
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "conan.install",
+                    "when": "inConanPackage"
+                }
+            ]
+        }
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
