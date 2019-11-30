@@ -41,11 +41,13 @@
 		"commands": [
 			{
 				"command": "conan.newPackage",
-				"title": "Conan: New package"
+				"title": "New package",
+                "category": "Conan"
 			},
             {
                 "command": "conan.install",
-                "title": "Conan: Install requires",
+                "title": "Install requires",
+                "category": "Conan"
             }
 		],
         "menus": {
