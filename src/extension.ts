@@ -5,6 +5,7 @@ import {new_package} from './new_package'
 import {install} from './install'
 import {build} from './build'
 import {create} from './create'
+import {search_conan_center} from './search_conan_center'
 import {select_profile} from './select_profile'
 import {new_profile} from './new_profile'
 import {GlobalState} from './state';
@@ -26,6 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand('conan.install', () => {install(state);}));
     context.subscriptions.push(vscode.commands.registerCommand('conan.build', () => {build(state);}));
     context.subscriptions.push(vscode.commands.registerCommand('conan.create', () => {create(state);}));
+    context.subscriptions.push(vscode.commands.registerCommand('conan.searchConanCenter', search_conan_center));
 
     // Add status bar item
     //context.subscriptions.push(state.status_bar);

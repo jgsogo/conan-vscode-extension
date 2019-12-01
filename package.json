@@ -11,6 +11,7 @@
 	],
 	"activationEvents": [
 		"onCommand:conan.newPackage",
+        "onCommand:conan.searchConanCenter",
 		"workspaceContains:**/conanfile.py"
 	],
 	"main": "./dist/extension",
@@ -67,6 +68,11 @@
 			{
 				"command": "conan.create",
 				"title": "Create package",
+				"category": "Conan"
+			},
+			{
+				"command": "conan.searchConanCenter",
+				"title": "Search package in Conan Center",
 				"category": "Conan"
 			}
 		],
