@@ -162,4 +162,51 @@ class Client {
         });
     }
 
+    async install(conanfile: string, install_path: string, profile: string, build: string) {
+        console.log('Client::install');
+        const command = `install --install-folder=${install_path} --profile=${profile} --build=${build} ${conanfile}`;
+        await this._run(command, (err, data) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            console.log(data);
+        });
+    }
+
+    async create(conanfile: string, profile: string, build: string) {
+        console.log('Client::createcreate');
+        const command = `create --profile=${profile} --build=${build} ${conanfile}`;
+        await this._run(command, (err, data) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            console.log(data);
+        });
+    }
+
+    async configure(cmakelists_path: string, build_directory: string) {
+        console.log('Client::configure');
+        // TODO: play with virtualenvs
+
+        // Run CMake
+        const toolchain_file = path.join(build_directory, 'conan_toolchain.cmake')
+        const command = `cmake -DCMAKE_TOOLCHAIN_FILE="${toolchain_file}" -S "${cmakelists_path}" -B "${build_directory}"`;
+        await execShellCommand(command)
+            .then((data) => { console.log(data); })
+            .catch((data) => {console.error(data); });
+    }
+
+    async build(build_directory: string) {
+        console.log('Client::build');
+        // TODO: play with virtualenvs
+
+        // Run CMake
+        const command = `cmake --build "${build_directory}"`;
+        await execShellCommand(command)
+            .then((data) => { console.log(data); })
+            .catch((data) => {console.error(data); });
+    }
+
 }

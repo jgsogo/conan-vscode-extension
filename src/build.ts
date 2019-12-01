@@ -6,8 +6,8 @@ import {get_client} from './conan/client'
 import {GlobalState} from './state';
 
 
-export async function install(state: GlobalState) {
-    console.log("Conan >>> install");
+export async function build(state: GlobalState) {
+    console.log("Conan >>> build");
 
     // We need to be in a folder
     if (vscode.workspace.workspaceFolders === undefined) {
@@ -16,12 +16,8 @@ export async function install(state: GlobalState) {
     }
     const workspaceFolder = vscode.workspace.workspaceFolders![0].uri.fsPath;
     const working_dir = path.join(workspaceFolder, `build-${state.get_active_profile()}`);
-    const conanfile = path.join(workspaceFolder, 'conanfile.py');
 
     let client = get_client(workspaceFolder);
-    await client.install(conanfile, working_dir, state.get_active_profile(), "missing");
-    vscode.window.showInformationMessage(`Configuration installed for profile: '${state.get_active_profile()}'`);
-
-    await client.configure(workspaceFolder, working_dir);
-    vscode.window.showInformationMessage(`Prooject configured in: '${working_dir}'`);
+    await client.build(working_dir);
+    vscode.window.showInformationMessage(`Project built in: '${working_dir}'`);
 }

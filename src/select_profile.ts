@@ -14,7 +14,7 @@ export async function select_profile(state: GlobalState) {
 
     // Get profile list
     let client = get_client(workspaceFolder);
-    client.get_profiles().then((profiles: string[]) => {
+    await client.get_profiles().then((profiles: string[]) => {
         if (profiles.length === 0) {
             vscode.window.showErrorMessage('No profiles found. Create one using command "Create new profile"');
             return;
@@ -26,6 +26,7 @@ export async function select_profile(state: GlobalState) {
                 // Activate profile in context
                 console.log('Profile selected: "%s"', value);
                 state.set_active_profile(value);
+                vscode.window.showInformationMessage(`Active Conan profile: '${state.get_active_profile()}'`);
             }
         });
     });

@@ -26,4 +26,6 @@ export class GlobalState implements vscode.Disposable {
         this.active_profile = profile;
         this._update();
     }
+
+    get_active_profile() {return this.active_profile;}
 }

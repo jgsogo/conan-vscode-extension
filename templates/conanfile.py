@@ -1,4 +1,4 @@
-from conans import ConanFile, CMakeToolchain
+from conans import ConanFile, CMakeToolchain, CMake
 
 
 class <%= _.capitalize(name) %>Recipe(ConanFile):

@@ -28,7 +28,7 @@
 					"description": "Path to the Conan home (configuration and settings)",
 					"type": "string",
 					"scope": "window",
-					"default": "${workspaceFolder}/.conan"
+					"default": "${workspaceFolder}"
 				},
 				"conan.storagePath": {
 					"description": "Path to the Conan cache (to store packages)",
@@ -56,7 +56,17 @@
 			},
 			{
 				"command": "conan.install",
-				"title": "Install requires",
+				"title": "Install project",
+				"category": "Conan"
+			},
+			{
+				"command": "conan.build",
+				"title": "Build",
+				"category": "Conan"
+			},
+			{
+				"command": "conan.create",
+				"title": "Create package",
 				"category": "Conan"
 			}
 		],
@@ -72,6 +82,14 @@
 				},
 				{
 					"command": "conan.install",
+					"when": "inConanPackage"
+				},
+				{
+					"command": "conan.build",
+					"when": "inConanPackage"
+				},
+				{
+					"command": "conan.create",
 					"when": "inConanPackage"
 				}
 			]
