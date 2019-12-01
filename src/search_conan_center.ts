@@ -8,7 +8,13 @@ import { workspace } from 'vscode';
 
 // Example https://github.com/microsoft/vscode-extension-samples/blob/master/quickinput-sample/src/quickOpen.ts
 
-const endpoint = 'https://center.conan.io/api/ui/search?name_fragment=boost'
+const endpoint = 'https://center.conan.io/api/ui/search?name_fragment='
+
+function search(query: string) {
+    const url = `${endpoint}${query}`;
+    console.log("Search in conan-center: '%s'", url);
+}
+
 
 class PackageItem implements QuickPickItem {
 
@@ -52,10 +58,12 @@ export async function search_conan_center() {
 						return;
 					}
 
+                    input.busy = true;
+
                     rg = cp.exec(`rg --files -g ${q}*${value}*${q}`, (err, stdout) => {
 
+                        input.busy = false;
                     });
-
                 }),
                 input.onDidChangeSelection(items => {
                     const item = items[0];
@@ -65,7 +73,7 @@ export async function search_conan_center() {
                     }
                 }),
                 input.onDidHide(() => {
-                    rgs.forEach(rg => rg.kill());
+                    if(rg) rg.kill();
                     resolve(undefined);
                     input.dispose();
                 })
