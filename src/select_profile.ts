@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import {get_client} from './conan/client'
+import {GlobalState} from './state';
 
-export async function select_profile() {
+export async function select_profile(state: GlobalState) {
     console.log("Conan >>> select_profile");
 
     // We need to be in a folder
@@ -23,8 +24,8 @@ export async function select_profile() {
         profile_selected.then((value) => {
             if (value) {
                 // Activate profile in context
-                vscode.commands.executeCommand("setContext", "Conan::profile", value);
                 console.log('Profile selected: "%s"', value);
+                state.set_active_profile(value);
             }
         });
     });
