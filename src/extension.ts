@@ -3,6 +3,9 @@
 import * as vscode from 'vscode';
 import {new_package} from './new_package'
 import {install} from './install'
+import {select_profile} from './select_profile'
+import {new_profile} from './new_profile'
+
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -17,6 +20,8 @@ export function activate(context: vscode.ExtensionContext) {
     // Register the commands for this extension
     context.subscriptions.push(vscode.commands.registerCommand('conan.newPackage', new_package));
     context.subscriptions.push(vscode.commands.registerCommand('conan.install', install));
+    context.subscriptions.push(vscode.commands.registerCommand('conan.selectProfile', select_profile));
+    context.subscriptions.push(vscode.commands.registerCommand('conan.newProfile', new_profile));
 
     vscode.commands.executeCommand("setContext", "inConanPackage", true);
 }

@@ -45,6 +45,16 @@
 				"category": "Conan"
 			},
 			{
+				"command": "conan.newProfile",
+				"title": "Create new profile",
+				"category": "Conan"
+			},
+			{
+				"command": "conan.selectProfile",
+				"title": "Select active profile",
+				"category": "Conan"
+			},
+			{
 				"command": "conan.install",
 				"title": "Install requires",
 				"category": "Conan"
@@ -52,6 +62,14 @@
 		],
 		"menus": {
 			"commandPalette": [
+				{
+					"command": "conan.newProfile",
+					"when": "inConanPackage"
+				},
+				{
+					"command": "conan.selectProfile",
+					"when": "inConanPackage"
+				},
 				{
 					"command": "conan.install",
 					"when": "inConanPackage"
@@ -84,6 +102,10 @@
 		"webpack-cli": "^3.3.10"
 	},
 	"dependencies": {
-		"lodash.template": "^4.5.0"
+		"@types/semver": "^6.2.0",
+		"@types/tmp": "^0.1.0",
+		"lodash.template": "^4.5.0",
+		"semver": "^6.3.0",
+		"tmp": "^0.1.0"
 	}
 }
