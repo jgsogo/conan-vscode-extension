@@ -1,23 +1,25 @@
 from conans import ConanFile, CMakeToolchain
 
+
 class <%= _.capitalize(name) %>Recipe(ConanFile):
     name = "<%= name %>"
     version = "0.0.1"
 
     settings = "os", "arch", "compiler", "build_type"
+    <% if (is_library) { %>
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": False, "fPIC": True}
-
+    <% } %>
     scm = {
         "type": "git",
         "url": "auto",
         "revision": "auto"
     }
-
+    <% if (is_library) { %>
     def config_options(self):
         if self.settings.os == "Windows":
             del self.options.fPIC
-
+    <% } %>
     def toolchain(self):
         return CMakeToolchain(self)
 
@@ -35,3 +37,7 @@ class <%= _.capitalize(name) %>Recipe(ConanFile):
         cmake.install()
         # Copy other files to the package
         # self.copy("*LICENSE*", src=self.source_folder, dst="licenses", keep_path=False)
+    <% if (!is_library) { %>
+    def package_id(self):
+        self.info.header_only()
+    <% } %>

@@ -35,11 +35,11 @@ const config = {
                 }]
             },
             {
-                test: /\.py$/i,  // This are the template files
+                test: /\.(py|h|cpp|txt)$/i,  // These are the template files
                 use: [{
                     loader: 'file-loader',
                     options: {
-                        name: 'templates/[name].[ext]'
+                        name: '[path]/[name].[ext]'
                     }
                 }]
             }
