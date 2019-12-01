@@ -1,38 +1,26 @@
-import * as vscode from 'vscode';
-import * as path from 'path';
-import * as cp from 'child_process';
-import { Uri, window, Disposable } from 'vscode';
+import { window, Disposable } from 'vscode';
 import { QuickPickItem } from 'vscode';
-import { workspace } from 'vscode';
 import * as request from 'request';
-import { stringify } from 'querystring';
 
 
-// Example https://github.com/microsoft/vscode-extension-samples/blob/master/quickinput-sample/src/quickOpen.ts
+// Dynamic pick adapted from: https://github.com/microsoft/vscode-extension-samples/blob/master/quickinput-sample/src/quickOpen.ts
 
-const endpoint = 'https://center.conan.io/api/ui/search?name_fragment='
 
 function search(query: string, callback: (err: any, data: PackageItem[]) => void) {
-    if (query.length <= 3) {
-        callback(null, []);
-        return;
-    }
-
-    const url = `${endpoint}${query}`;
-    console.log("Search in conan-center: '%s'", url);
-
+    const url = `https://center.conan.io/api/ui/search?name_fragment=${query}`;
     request(url, (error, response, body) => {
         if (!error && response.statusCode == 200) {
-            console.log('return body: %s', body);
             var info = JSON.parse(body);
-            let packages = info.packages.forEach((element: {name: string, user: string, channel: string, description: string, latest_version: string;}) => {
-                return new PackageItem(element.name, element.description);
-            });
-            console.log('+++ callback');
+            let packages = info.packages.map((element: {name: string, user: string, channel: string, description: string, latest_version: string;}) => 
+                new PackageItem(element.name,
+                                element.latest_version,
+                                element.description,
+                                element.user === '_' ? undefined : element.user,
+                                element.channel === '_' ? undefined : element.channel)
+            );
             callback(null, packages);
         }
         else {
-            console.log('return error: %s', error);
             callback(error, []);
         }
     })
@@ -43,61 +31,45 @@ class PackageItem implements QuickPickItem {
 
     label: string;
     description: string;
-    base: string;
-    uri: string;
-    
-    constructor(name: string, description: string) {
-        this.uri = name;
-        this.base = name;
-        this.label = name;
+
+    constructor(public name: string, public version: string, description: string, public user?: string, public channel?: string) {
+        this.label = `${name}/${version}`;
+        if (user && channel) {
+            this.label += `@${user}/${channel}`;
+        }
         this.description = description;
     }
-}
 
-
-class MessageItem implements QuickPickItem {
-
-    label: string;
-    description = '';
-    detail: string;
-    base: string;
-    message: string;
-    
-    constructor(base: string, message: string) {
-        this.label = message.replace(/\r?\n/g, ' ');
-        this.detail = base;
-        this.base = base;
-        this.message = message;
+    get_reference() {
+        return this.label;
     }
 }
 
 
 export async function search_conan_center() {
     console.log('Conan >>> search_conan_center');
+    const pck = await dynamic_search();
+    if (pck) {
+        console.log('Got package selection: %s', pck.get_reference());
+    }
+}
 
+async function dynamic_search() {
     const disposables: Disposable[] = [];
     try {
-        return await new Promise<string | undefined>((resolve, reject) => {
-            const input = window.createQuickPick<PackageItem | MessageItem>();
-            input.placeholder = 'Type to search for packages';
-            //let rg: cp.ChildProcess;
+        return await new Promise<PackageItem | undefined>((resolve, reject) => {
+            const input = window.createQuickPick<PackageItem>();
+            input.placeholder = 'Type to search for packages in Conan Center';
             disposables.push(
                 input.onDidChangeValue(value => {
-                    //if (rg) rg.kill();
-                    if (!value) {
+                    if (!value || value.length < 3) {
                         input.items = [];
                         return;
                     }
                     input.busy = true;
                     search(value, (error, packages) => {
-                        console.log('Back from search');
                         if (!error) {
-                            console.log('Add more packages, %s more', packages.length);
                             input.items = input.items.concat(packages);
-                        }
-                        else {
-                            console.log('Error, cadd a message');
-                            input.items = input.items.concat([new MessageItem("faailure", error)]);
                         }
                         input.busy = false;
                     });
@@ -105,12 +77,11 @@ export async function search_conan_center() {
                 input.onDidChangeSelection(items => {
                     const item = items[0];
                     if (item instanceof PackageItem) {
-                        resolve(item.label);
+                        resolve(item);
                         input.hide();
                     }
                 }),
                 input.onDidHide(() => {
-                    //if(rg) rg.kill();
                     resolve(undefined);
                     input.dispose();
                 })
