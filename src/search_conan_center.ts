@@ -9,7 +9,7 @@ import * as request from 'request';
 function search(query: string, callback: (err: any, data: PackageItem[]) => void) {
     const url = `https://center.conan.io/api/ui/search?name_fragment=${query}`;
     request(url, (error, response, body) => {
-        if (!error && response.statusCode == 200) {
+        if (!error && response.statusCode === 200) {
             var info = JSON.parse(body);
             let packages = info.packages.map((element: {name: string, user: string, channel: string, description: string, latest_version: string;}) => 
                 new PackageItem(element.name,
@@ -23,7 +23,7 @@ function search(query: string, callback: (err: any, data: PackageItem[]) => void
         else {
             callback(error, []);
         }
-    })
+    });
 }
 
 
@@ -74,7 +74,9 @@ async function dynamic_search() {
                             let a = input.items.concat();
                             for(var i=0; i<a.length; ++i) {
                                 for(var j=i+1; j<a.length; ++j) {
-                                    if(a[i].label === a[j].label) a.splice(j--, 1);
+                                    if(a[i].label === a[j].label) {
+                                        a.splice(j--, 1);
+                                    }
                                 }
                             }
                             input.items = a;

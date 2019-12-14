@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 
-import {get_client} from './conan/client'
+import {get_client} from './conan/client';
 import {GlobalState} from './state';
 
 

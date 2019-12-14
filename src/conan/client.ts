@@ -11,12 +11,12 @@ import { create } from 'domain';
 
 export function get_client(workspaceFolder: string): Client {
     console.log("Get new Conan client");
-    const config = vscode.workspace.getConfiguration('conan')
+    const config = vscode.workspace.getConfiguration('conan');
 
     const executable = config.get<string>('executable');
     if (!executable) {
         vscode.window.showErrorMessage('Configure a path to Conan executable');
-        throw 'ERROR: Configure a path to Conan executable';  // TODO: Finish command
+        throw new Error('ERROR: Configure a path to Conan executable');  // TODO: Finish command
     }
     
     let userHome = config.get<string>('userHome');
@@ -69,8 +69,12 @@ class Client {
         const old_user_home = process.env.CONAN_USER_HOME;
         const old_storage_path = process.env.CONAN_STORAGE_PATH;
 
-        if (this.user_home) process.env.CONAN_USER_HOME = this.user_home;
-        if (this.storage_path) process.env.CONAN_STORAGE_PATH = this.storage_path;
+        if (this.user_home) {
+            process.env.CONAN_USER_HOME = this.user_home;
+        }
+        if (this.storage_path) {
+            process.env.CONAN_STORAGE_PATH = this.storage_path;
+        }
         
         await execShellCommand(`${this.executable} ${command}`)
             .then((data) => { callback(null, data); })
@@ -106,13 +110,15 @@ class Client {
         console.log('Client::_get_version');
         let version = new semver.SemVer("0.0.0");
         await this._run("--version", (err, stdout) => {
-            if (err) throw err;
+            if (err) {
+                throw err;
+            }
             const matches = stdout.match(/^Conan version ([^\s]+)$/);
             if (matches) {
                 version = new semver.SemVer(matches[1], true);
             }
             else {
-                throw `Cannot get version from string '${stdout}'`;
+                throw new Error(`Cannot get version from string '${stdout}'`);
             }
         });
         return version;
@@ -135,7 +141,9 @@ class Client {
         let profile_path: string = '';
         let profile_created = false;
         await this._run(command, (err, data) => {
-            if (err) return;
+            if (err) {
+                return;
+            }
             const m = data.match(/\: ([^\s]+)$/);
             if (m) {
                 profile_created = true;
@@ -191,7 +199,7 @@ class Client {
         // TODO: play with virtualenvs
 
         // Run CMake
-        const toolchain_file = path.join(build_directory, 'conan_toolchain.cmake')
+        const toolchain_file = path.join(build_directory, 'conan_toolchain.cmake');
         const command = `cmake -DCMAKE_TOOLCHAIN_FILE="${toolchain_file}" -S "${cmakelists_path}" -B "${build_directory}"`;
         await execShellCommand(command)
             .then((data) => { console.log(data); })

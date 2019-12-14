@@ -1,13 +1,13 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import {new_package} from './new_package'
-import {install} from './install'
-import {build} from './build'
-import {create} from './create'
-import {search_conan_center} from './search_conan_center'
-import {select_profile} from './select_profile'
-import {new_profile} from './new_profile'
+import {new_package} from './new_package';
+import {install} from './install';
+import {build} from './build';
+import {create} from './create';
+import {search_conan_center} from './search_conan_center';
+import {select_profile} from './select_profile';
+import {new_profile} from './new_profile';
 import {GlobalState} from './state';
 
 

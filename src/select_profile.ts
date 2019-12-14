@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import {get_client} from './conan/client'
+import {get_client} from './conan/client';
 import {GlobalState} from './state';
 
 export async function select_profile(state: GlobalState) {

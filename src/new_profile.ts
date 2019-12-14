@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { promisify } from "util";
 import * as _ from 'lodash';
-import {get_client} from './conan/client'
+import {get_client} from './conan/client';
 import { file } from 'tmp';
 
 export async function new_profile() {
@@ -21,19 +21,22 @@ export async function new_profile() {
     let profile_name_input = await vscode.window.showInputBox({
         prompt: 'Enter a name for the new profile',
         validateInput: (value: string): string => {
-            if (!value.length)
+            if (!value.length) {
                 return 'A profile name is required';
+            }
             return '';
         },
     });
-    if (!profile_name_input) return -1;
+    if (!profile_name_input) {
+        return -1;
+    }
     console.log('User input profile name "%s"', profile_name_input);
     const profile_name = profile_name_input.toLowerCase();
 
     // Create profile and open it in the main window
     const {created, filepath} = await client.new_profile(profile_name, true);
     console.log(created);
-    console.log(filepath)
+    console.log(filepath);
     if (!created) {
         vscode.window.showErrorMessage(`A profile named '${profile_name}' already exists`);
         return -1;

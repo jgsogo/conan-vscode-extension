@@ -40,12 +40,15 @@ export async function new_package() {
     let package_name_input = await vscode.window.showInputBox({
         prompt: 'Enter a name for the new package',
         validateInput: (value: string): string => {
-            if (!value.length)
+            if (!value.length) {
                 return 'A package name is required';
+            }
             return '';
         },
     });
-    if (!package_name_input) return -1;
+    if (!package_name_input) {
+        return -1;
+    }
     console.log('User input package name "%s"', package_name_input);
     const package_name = package_name_input.toLowerCase();
 
@@ -56,7 +59,9 @@ export async function new_package() {
             {label: 'Header only', description: 'Create a header-only library'}
         ],
         { placeHolder: 'Select the type of library to create.' });
-    if (!package_type) return -1;
+    if (!package_type) {
+        return -1;
+    }
     console.log('User input package type "%s"', package_type.label);
     const is_library = Boolean(package_type.label === "Library");
 
@@ -103,7 +108,7 @@ export async function new_package() {
         await fn_create(tp_cmakelists.default, context, path.join('test_package', 'CMakeLists.txt'));
         await fn_create(tp_conanfile.default, context, path.join('test_package', 'conanfile.py'));
         await fn_create(tp_test_package.default, context, path.join('test_package', 'test_package.cpp'));
-    };
+    }
 
     vscode.window.showInformationMessage(`Package ready, files created: '${files_created.join("', '")}'`);
 }
