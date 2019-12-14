@@ -12,6 +12,7 @@ install:
     fi
 script:
   - |
+    yarn --ignore-engines
     echo ">>> Compile vscode-test"
     yarn && yarn compile
     echo ">>> Compiled vscode-test"
