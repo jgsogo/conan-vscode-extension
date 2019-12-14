@@ -70,6 +70,14 @@ async function dynamic_search() {
                     search(value, (error, packages) => {
                         if (!error) {
                             input.items = input.items.concat(packages);
+                            // Remove duplicates
+                            let a = input.items.concat();
+                            for(var i=0; i<a.length; ++i) {
+                                for(var j=i+1; j<a.length; ++j) {
+                                    if(a[i].label === a[j].label) a.splice(j--, 1);
+                                }
+                            }
+                            input.items = a;
                         }
                         input.busy = false;
                     });
